@@ -7,6 +7,8 @@ import {
   Dimensions,
   Platform,
 } from "react-native";
+import Lightbox from "react-native-lightbox";
+import { LogBox } from "react-native";
 
 function HomeScreen() {
   const [cats, setCats] = useState("");
@@ -36,7 +38,19 @@ function HomeScreen() {
         numColumns={Platform.OS === "web" ? 3 : 2}
         key={Platform.OS === "web" ? 3 : 2}
         renderItem={({ item }) => (
-          <Image style={styles.catImage} source={{ uri: item.url }} />
+          <Lightbox
+            useNativeDriver={true}
+            renderContent={() => {
+              return (
+                <Image
+                  style={styles.catImageLarge}
+                  source={{ uri: item.url }}
+                />
+              );
+            }}
+          >
+            <Image style={styles.catImage} source={{ uri: item.url }} />
+          </Lightbox>
         )}
       />
     </View>
@@ -59,6 +73,17 @@ const styles = StyleSheet.create({
     width: listWidth / (Platform.OS === "web" ? 3 : 2),
     aspectRatio: 1,
   },
+  catImageLarge: {
+    width: listWidth * 0.6,
+    aspectRatio: 1,
+    left: listWidth * 0.2,
+  },
 });
 
 export default HomeScreen;
+
+//these logs are not needed
+LogBox.ignoreLogs([
+  "Animated.event now requires a second argument for options",
+  "Animated: `useNativeDriver` was not specified. This is a required option and must be explicitly set to `true` or `false`",
+]);
